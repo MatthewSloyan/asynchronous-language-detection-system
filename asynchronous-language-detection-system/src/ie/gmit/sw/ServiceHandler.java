@@ -47,8 +47,6 @@ public class ServiceHandler extends HttpServlet {
 		//You can start to build the subject database at this point. The init() method is only ever called once during the life cycle of a servlet
 
 		f = new File(languageDataSet);
-
-
 	}
 
 	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

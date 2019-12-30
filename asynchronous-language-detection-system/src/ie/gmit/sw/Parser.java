@@ -1,8 +1,11 @@
 package ie.gmit.sw;
 
 import java.io.*;
+import java.util.HashMap;
 import java.util.Map;
+
 public class Parser implements Runnable{
+	private Map<Integer, LanguageEntry> queryMap = null;
 	private Database db = null;
 	private String file;
 	private int k;
@@ -19,7 +22,8 @@ public class Parser implements Runnable{
 	
 	public void run() {
 		try {
-			BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
+			//BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
+			BufferedReader br = new BufferedReader(new InputStreamReader(this.getClass().getClassLoader().getResourceAsStream(file)));
 			String line = null;
 			
 			while((line = br.readLine()) != null) {
@@ -45,25 +49,32 @@ public class Parser implements Runnable{
 	}
 	
 	private void analyseQuery(String s) {
+		queryMap = new HashMap<Integer, LanguageEntry>();
+		
 		for (int i = 0; i < s.length() - k; i++) {
 			CharSequence kmer = s.substring(i, i + k);
-			add(kmer, language);
+			add(kmer);
 		}
+		
+		System.out.println(db.getLanguage(queryMap));
 	}
 	
 	public void add(CharSequence s) {
 		int kmer = s.hashCode();
-		Map<Integer, LanguageEntry> langDb = getLanguageEntries(lang);
 		
 		int frequency = 1;
-		if (langDb.containsKey(kmer)) {
-			frequency += langDb.get(kmer).getFrequency();
+		if (queryMap.containsKey(kmer)) {
+			frequency += queryMap.get(kmer).getFrequency();
 		}
-		langDb.put(kmer, new LanguageEntry(kmer, frequency));
+		queryMap.put(kmer, new LanguageEntry(kmer, frequency));
 	}
 
 	public static void main(String[] args) {
-		Parser p = new Parser("wili-2018-Small-11750-Edited.txt", 1);
+		//Parser.class.getClassLoader().getResourceAsStream("DBProperty.properties");
+		//URL url = Thread.currentThread().getContextClassLoader().getResource("wili-2018-Small-11750-Edited.txt");  
+		//Parser p = new Parser(url.toString(), 1);
+		
+		Parser p = new Parser("wili-2018-Small-11750-Edited.txt", 4);
 		
 		Database db = new Database();
 		p.setDb(db);
