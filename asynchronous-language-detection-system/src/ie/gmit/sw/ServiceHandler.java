@@ -1,8 +1,16 @@
 package ie.gmit.sw;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+
 import javax.servlet.*;
 import javax.servlet.http.*;
+
+import com.sun.javafx.collections.MappingChange.Map;
 
 
 /*
@@ -29,6 +37,8 @@ public class ServiceHandler extends HttpServlet {
 	private static long jobNumber = 0; //The number of the task in the async queue
 
 	private File f;
+	private ConcurrentHashMap<String,LanguageResult> outQueue = new ConcurrentHashMap<String, LanguageResult>();
+	private List<LanguageRequest> inQueue = new LinkedList<>();
 
 	public void init() throws ServletException {
 		ServletContext ctx = getServletContext(); //Get a handle on the application context
@@ -54,16 +64,21 @@ public class ServiceHandler extends HttpServlet {
 		out.print("<html><head><title>Advanced Object Oriented Software Development Assignment</title>");
 		out.print("</head>");
 		out.print("<body>");
+		
 
 		if (taskNumber == null){
 			taskNumber = new String("T" + jobNumber);
 			jobNumber++;
 			//Add job to in-queue
+			
+			inQueue.add(new LanguageRequest(s, jobNumber));
 		}else{
 			//Check out-queue for finished job
+			if (outQueue.containsKey(taskNumber)) {
+				out.print("Language: " + outQueue.get(taskNumber));
+				outQueue.remove(taskNumber);
+			}
 		}
-
-
 
 		out.print("<H1>Processing request for Job#: " + taskNumber + "</H1>");
 		out.print("<div id=\"r\"></div>");
@@ -101,8 +116,6 @@ public class ServiceHandler extends HttpServlet {
 		out.print("<script>");
 		out.print("var wait=setTimeout(\"document.frmRequestDetails.submit();\", 10000);");
 		out.print("</script>");
-
-
 	}
 
 	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
