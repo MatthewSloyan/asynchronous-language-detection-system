@@ -62,7 +62,7 @@ public class Parser implements Runnable{
 //		}
 	}
 	
-	private void analyseQuery(String text) {
+	public String analyseQuery(String text) {
 		queryMap = new TreeMap<Integer, LanguageEntry>();
 		
 		for (int i = 0; i < text.length() - k; i++) {
@@ -80,7 +80,7 @@ public class Parser implements Runnable{
 		
 		getTop(400);
 		
-		System.out.println(db.getLanguage(queryMap));
+		return db.getLanguage(queryMap).toString();
 	}
 	
 	public void add(CharSequence s) {

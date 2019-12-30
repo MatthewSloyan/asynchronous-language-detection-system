@@ -1,16 +1,17 @@
 package ie.gmit.sw;
 
-import java.io.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 
-import javax.servlet.*;
-import javax.servlet.http.*;
-
-import com.sun.javafx.collections.MappingChange.Map;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 
 /*
@@ -34,19 +35,29 @@ import com.sun.javafx.collections.MappingChange.Map;
 
 public class ServiceHandler extends HttpServlet {
 	private String languageDataSet = null; //This variable is shared by all HTTP requests for the servlet
-	private static long jobNumber = 0; //The number of the task in the async queue
-
+	private static int jobNumber = 0; //The number of the task in the async queue
+	
 	private File f;
-	private ConcurrentHashMap<String,LanguageResult> outQueue = new ConcurrentHashMap<String, LanguageResult>();
-	private List<LanguageRequest> inQueue = new LinkedList<>();
+	private ConcurrentHashMap<Integer, String> outQueue = new ConcurrentHashMap<Integer, String>();
+	//private List<LanguageRequest> inQueue = new LinkedList<>();
+	private BlockingQueue <LanguageRequest> inQueue = new ArrayBlockingQueue<>(10);
 
 	public void init() throws ServletException {
 		ServletContext ctx = getServletContext(); //Get a handle on the application context
 		languageDataSet = ctx.getInitParameter("LANGUAGE_DATA_SET"); //Reads the value from the <context-param> in web.xml
 
 		//You can start to build the subject database at this point. The init() method is only ever called once during the life cycle of a servlet
+		
+		//start the running time of program to be printed out for user
+//		long startTime = System.nanoTime(); 
+//		//running time
+//		System.out.println("\nRunning time (ms): " + (System.nanoTime() - startTime));
+//		final long usedMem = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
+//		System.out.println("Used memory: " + usedMem + "\n");
 
 		f = new File(languageDataSet);
+		
+		InitialiseDatabase.getInstance().Initialise(languageDataSet);
 	}
 
 	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -67,10 +78,17 @@ public class ServiceHandler extends HttpServlet {
 			jobNumber++;
 			//Add job to in-queue
 			
-			inQueue.add(new LanguageRequest(s, jobNumber));
+			QueryProducer.getInstance().putJobInQueue(new LanguageRequest(s, jobNumber));
+			
+			//new QueryProducer(inQueue, new LanguageRequest(s, jobNumber));
+//			try {
+//				inQueue.put(new LanguageRequest(s, jobNumber));
+//			} catch (InterruptedException e) {
+//				e.printStackTrace();
+//			}
 		}else{
 			//Check out-queue for finished job
-			if (outQueue.containsKey(taskNumber)) {
+			if (JobProcessor.getInstance().getOutQueue().containsKey(taskNumber)) {
 				out.print("Language: " + outQueue.get(taskNumber));
 				outQueue.remove(taskNumber);
 			}
