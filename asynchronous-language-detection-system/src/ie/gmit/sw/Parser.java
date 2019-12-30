@@ -1,8 +1,12 @@
 package ie.gmit.sw;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 public class Parser implements Runnable{
 	private Map<Integer, LanguageEntry> queryMap = null;
@@ -23,12 +27,14 @@ public class Parser implements Runnable{
 	public void run() {
 		try {
 			//BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
+			// Code adapted to get resource in web application: https://stackoverflow.com/questions/10978380/how-to-read-a-text-file-from-a-web-application
 			BufferedReader br = new BufferedReader(new InputStreamReader(this.getClass().getClassLoader().getResourceAsStream(file)));
 			String line = null;
 			
 			while((line = br.readLine()) != null) {
 				String[] record = line.trim().split("@");
-				if (record.length != 2) continue;
+				if (record.length != 2) 
+					continue;
 				parse(record[0], record[1]);
 			}
 			
@@ -46,15 +52,33 @@ public class Parser implements Runnable{
 			CharSequence kmer = text.substring(i, i + k);
 			db.add(kmer, language);
 		}
+		
+		// Will thread for speed
+//		for (int i = 0; i <= k; i++) {
+//			for (int j = 0; j < text.length() - i; j++) {
+//				CharSequence kmer = text.substring(j, j + i);
+//				db.add(kmer, language);
+//			}
+//		}
 	}
 	
-	private void analyseQuery(String s) {
-		queryMap = new HashMap<Integer, LanguageEntry>();
+	private void analyseQuery(String text) {
+		queryMap = new TreeMap<Integer, LanguageEntry>();
 		
-		for (int i = 0; i < s.length() - k; i++) {
-			CharSequence kmer = s.substring(i, i + k);
+		for (int i = 0; i < text.length() - k; i++) {
+			CharSequence kmer = text.substring(i, i + k);
 			add(kmer);
 		}
+		
+//		for (int i = 0; i <= k; i++) {
+//			for (int j = 0; j < text.length() - i; j++) {
+//				CharSequence kmer = text.substring(j, j + i);
+//				System.out.println(kmer);
+//				add(kmer);
+//			}
+//		}
+		
+		getTop(400);
 		
 		System.out.println(db.getLanguage(queryMap));
 	}
@@ -67,6 +91,25 @@ public class Parser implements Runnable{
 			frequency += queryMap.get(kmer).getFrequency();
 		}
 		queryMap.put(kmer, new LanguageEntry(kmer, frequency));
+	}
+	
+	public void getTop(int max) {
+		Map<Integer, LanguageEntry> temp = new TreeMap<>();
+		List<LanguageEntry> les = new ArrayList<>(queryMap.values());
+		Collections.sort(les);
+		
+		int rank = 1;
+		for (LanguageEntry le : les) {
+			le.setRank(rank);
+			temp.put(le.getKmer(), le);			
+			if (rank == max) 
+				break;
+			rank++;
+			
+			System.out.println(le.getFrequency());
+		}
+		
+		queryMap = temp;
 	}
 
 	public static void main(String[] args) {
@@ -89,8 +132,9 @@ public class Parser implements Runnable{
 		
 		db.resize(300);
 		
-		String s = "Gabh isteach sa seomra folctha agus nigh t� f�in";
-		//String s = "Go into the bathroom and wash yourself";
+		//String s = "'S e baile ann am Moireabh a tha ann an Inbhir Èireann (Beurla: Findhorn). Tha am baile suidhichte dìreach deas air Linne Mhoireibh. Tha Inbhir Èireann mu 3 mìltean iar-thuath air Cinn Lois agus mu 9 mìltean air falbh bho Fharrais. 'S e seo na co-chomharran aige: 57° 39′ 32.4″ Tuath agus 3° 36′ 39.6″ Iar.";
+		//String s = "Go into the bathroom and wash yourself, thank you! Good sir you are the best.";
+		String s = "Разположено е в полите на планината Плана и източния край на Самоковското поле. Също така се намира в близост до планините Витоша, Рила и Верила, като всяка една от тях може да бъде видяна от високите части на селото.";
 		
 		p.analyseQuery(s);
 	}

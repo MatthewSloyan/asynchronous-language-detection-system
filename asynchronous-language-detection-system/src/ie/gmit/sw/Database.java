@@ -71,6 +71,7 @@ public class Database {
 				distance += subject.size() + 1;
 			}else {
 				distance += s.getRank() - q.getRank();
+				//System.out.println(q.getRank());
 			}
 		}
 		return distance;

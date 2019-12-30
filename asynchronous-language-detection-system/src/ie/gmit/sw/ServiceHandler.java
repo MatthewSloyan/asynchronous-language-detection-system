@@ -53,17 +53,15 @@ public class ServiceHandler extends HttpServlet {
 		resp.setContentType("text/html"); //Output the MIME type
 		PrintWriter out = resp.getWriter(); //Write out text. We can write out binary too and change the MIME type...
 
-		//Initialise some request varuables with the submitted form info. These are local to this method and thread safe...
+		//Initialise some request variables with the submitted form info. These are local to this method and thread safe...
 		String option = req.getParameter("cmbOptions"); //Change options to whatever you think adds value to your assignment...
 		String s = req.getParameter("query");
 		String taskNumber = req.getParameter("frmTaskNumber");
-
 
 		out.print("<html><head><title>Advanced Object Oriented Software Development Assignment</title>");
 		out.print("</head>");
 		out.print("<body>");
 		
-
 		if (taskNumber == null){
 			taskNumber = new String("T" + jobNumber);
 			jobNumber++;
