@@ -18,7 +18,7 @@ public class InitialiseDatabase {
 		return parser;
 	}
 
-	public void Initialise(String languageDataSet) {
+	public void initialise(String languageDataSet) {
 		// start the running time of program to be printed out for user
 		long startTime = System.nanoTime(); 
 		
@@ -37,6 +37,7 @@ public class InitialiseDatabase {
 		}
 		
 		db.resize(300);
+		//db.toString();
 		
 		// running time
 		System.out.println("\nRunning time (ms): " + (System.nanoTime() - startTime));

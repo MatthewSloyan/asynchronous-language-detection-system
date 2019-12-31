@@ -57,7 +57,7 @@ public class ServiceHandler extends HttpServlet {
 
 		f = new File(languageDataSet);
 		
-		InitialiseDatabase.getInstance().Initialise(languageDataSet);
+		InitialiseDatabase.getInstance().initialise(languageDataSet);
 	}
 
 	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -78,7 +78,7 @@ public class ServiceHandler extends HttpServlet {
 			jobNumber++;
 			//Add job to in-queue
 			
-			QueryProducer.getInstance().putJobInQueue(new LanguageRequest(s, taskNumber));
+			JobProducer.getInstance().putJobInQueue(new LanguageRequest(s, taskNumber));
 			
 			//new QueryProducer(inQueue, new LanguageRequest(s, jobNumber));
 //			try {
@@ -130,7 +130,7 @@ public class ServiceHandler extends HttpServlet {
 		out.print("</html>");
 
 		out.print("<script>");
-		out.print("var wait=setTimeout(\"document.frmRequestDetails.submit();\", 10000);");
+		out.print("var wait=setTimeout(\"document.frmRequestDetails.submit();\", 5000);");
 		out.print("</script>");
 	}
 

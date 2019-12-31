@@ -3,7 +3,7 @@ package ie.gmit.sw;
 import java.util.*;
 
 public class Database {
-	private Map<Language, Map<Integer, LanguageEntry>> db = new TreeMap<>();
+	private Map<Language, Map<Integer, LanguageEntry>> db = new HashMap<>();
 	
 	public void add(CharSequence s, Language lang) {
 		int kmer = s.hashCode();
@@ -14,6 +14,7 @@ public class Database {
 			frequency += langDb.get(kmer).getFrequency();
 		}
 		langDb.put(kmer, new LanguageEntry(kmer, frequency));
+		db.put(lang, langDb);
 	}
 	
 	private Map<Integer, LanguageEntry> getLanguageEntries(Language lang){
@@ -21,7 +22,7 @@ public class Database {
 		if (db.containsKey(lang)) {
 			langDb = db.get(lang);
 		}else {
-			langDb = new TreeMap<Integer, LanguageEntry>();
+			langDb = new HashMap<Integer, LanguageEntry>();
 			db.put(lang, langDb);
 		}
 		return langDb;
@@ -36,7 +37,7 @@ public class Database {
 	}
 	
 	public Map<Integer, LanguageEntry> getTop(int max, Language lang) {
-		Map<Integer, LanguageEntry> temp = new TreeMap<>();
+		Map<Integer, LanguageEntry> temp = new HashMap<>();
 		List<LanguageEntry> les = new ArrayList<>(db.get(lang).values());
 		Collections.sort(les);
 		

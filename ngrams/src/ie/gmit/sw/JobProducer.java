@@ -3,16 +3,16 @@ package ie.gmit.sw;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
-public class QueryProducer {
+public class JobProducer {
 	
-	private static QueryProducer instance = null;
+	private static JobProducer instance = null;
 	private static BlockingQueue<LanguageRequest> inQueue = null;
 	
-	private QueryProducer() {}
+	private JobProducer() {}
     
-    public static QueryProducer getInstance() {
+    public static JobProducer getInstance() {
         if (instance == null) {
-            instance = new QueryProducer();
+            instance = new JobProducer();
         }
         return instance;
     }

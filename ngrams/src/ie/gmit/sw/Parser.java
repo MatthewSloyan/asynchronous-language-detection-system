@@ -1,12 +1,15 @@
 package ie.gmit.sw;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
+import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class Parser implements Runnable{
 	private Map<Integer, LanguageEntry> queryMap = null;
@@ -31,7 +34,15 @@ public class Parser implements Runnable{
 			BufferedReader br = new BufferedReader(new InputStreamReader(this.getClass().getClassLoader().getResourceAsStream(file)));
 			String line = null;
 			
+			//Start a thread pool of size 2, and loop
+			//ExecutorService es = Executors.newFixedThreadPool(5);
+			
 			while((line = br.readLine()) != null) {
+//				String[] record = line.trim().split("@");
+//				if (record.length != 2) 
+//					continue;
+//				
+//				es.execute(new Processor(record));
 				String[] record = line.trim().split("@");
 				if (record.length != 2) 
 					continue;
@@ -46,12 +57,24 @@ public class Parser implements Runnable{
 	}
 
 	private void parse(String text, String lang, int... ks) {
+
 		Language language = Language.valueOf(lang);
 		
 		for (int i = 0; i < text.length() - k; i++) {
 			CharSequence kmer = text.substring(i, i + k);
 			db.add(kmer, language);
 		}
+		
+//		//Start a thread pool of size 2, and loop
+//		ExecutorService es = Executors.newFixedThreadPool(2);
+//		
+//		for (int i = 0; i <= k; i++) {
+//			es.execute(new Processor(text, language, i));
+//		}
+		
+		//Start a single thread executor for ShingleTaker, and return fileMap
+		//ExecutorService es1 = Executors.newSingleThreadExecutor();
+		//Future<ConcurrentHashMap<Integer, List<Index>>> fileMap = es1.submit(new ShingleTaker(queue, files.length));
 		
 		// Will thread for speed
 //		for (int i = 0; i <= k; i++) {
@@ -64,7 +87,7 @@ public class Parser implements Runnable{
 	
 	public String analyseQuery(String text) {
 		try {
-			queryMap = new TreeMap<Integer, LanguageEntry>();
+			queryMap = new HashMap<Integer, LanguageEntry>();
 			
 			System.out.println(text);
 			
@@ -73,13 +96,13 @@ public class Parser implements Runnable{
 				add(kmer);
 			}
 			
-	//		for (int i = 0; i <= k; i++) {
-	//			for (int j = 0; j < text.length() - i; j++) {
-	//				CharSequence kmer = text.substring(j, j + i);
-	//				System.out.println(kmer);
-	//				add(kmer);
-	//			}
-	//		}
+//			for (int i = 0; i <= k; i++) {
+//				for (int j = 0; j < text.length() - i; j++) {
+//					CharSequence kmer = text.substring(j, j + i);
+//					System.out.println(kmer);
+//					add(kmer);
+//				}
+//			}
 			
 			getTop(400);
 		} catch (Exception e) {
@@ -102,7 +125,7 @@ public class Parser implements Runnable{
 	}
 	
 	public void getTop(int max) {
-		Map<Integer, LanguageEntry> temp = new TreeMap<>();
+		Map<Integer, LanguageEntry> temp = new HashMap<>();
 		List<LanguageEntry> les = new ArrayList<>(queryMap.values());
 		Collections.sort(les);
 		
@@ -119,6 +142,50 @@ public class Parser implements Runnable{
 		
 		queryMap = temp;
 	}
+	
+	private class Processor implements Runnable {
+		private String[] record;
+		
+		public Processor(String[] record) {
+			super();
+			this.record = record;
+		}
+
+		@Override
+	    public void run() {
+            try {
+            	parse(record[0], record[1]);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+	    }
+	}
+	
+//	private class Processor implements Runnable {
+//		private String text;
+//		private Language language;
+//		private int k;
+//		
+//		public Processor(String text, Language language, int k) {
+//			super();
+//			this.text = text;
+//			this.language = language;
+//			this.k = k;
+//		}
+//
+//		@Override
+//	    public void run() {
+//            try {
+//            	for (int i = 0; i < text.length() - k; i++) {
+//            		CharSequence kmer = text.substring(i, i + k);
+//    				db.add(kmer, language);
+//    			}
+//            	
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//	    }
+//	}
 
 //	public static void main(String[] args) {
 //		//Parser.class.getClassLoader().getResourceAsStream("DBProperty.properties");

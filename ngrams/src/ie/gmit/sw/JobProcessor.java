@@ -25,10 +25,12 @@ public class JobProcessor implements Runnable {
     	// Only runs when elements in the queue.
         while(true) {
             try {
-            	LanguageRequest request = QueryProducer.getInQueue().take();
-                //Do stuff
+            	LanguageRequest request = JobProducer.getInQueue().take();
             	Parser parser = InitialiseDatabase.getInstance().getParser();
+            	
+            	long startTime = System.nanoTime(); 
             	String result = parser.analyseQuery(request.getQuery());
+            	System.out.println("\nRunning time (ms): " + (System.nanoTime() - startTime));
             	
             	outQueue.put(request.getTaskNum(), result);
             	
