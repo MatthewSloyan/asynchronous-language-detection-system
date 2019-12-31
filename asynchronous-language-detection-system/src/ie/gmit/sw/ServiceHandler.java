@@ -38,9 +38,9 @@ public class ServiceHandler extends HttpServlet {
 	private static int jobNumber = 0; //The number of the task in the async queue
 	
 	private File f;
-	private ConcurrentHashMap<Integer, String> outQueue = new ConcurrentHashMap<Integer, String>();
+	private ConcurrentHashMap<String, String> outQueue = null;
 	//private List<LanguageRequest> inQueue = new LinkedList<>();
-	private BlockingQueue <LanguageRequest> inQueue = new ArrayBlockingQueue<>(10);
+	//private BlockingQueue <LanguageRequest> inQueue = new ArrayBlockingQueue<>(10);
 
 	public void init() throws ServletException {
 		ServletContext ctx = getServletContext(); //Get a handle on the application context
@@ -78,7 +78,7 @@ public class ServiceHandler extends HttpServlet {
 			jobNumber++;
 			//Add job to in-queue
 			
-			QueryProducer.getInstance().putJobInQueue(new LanguageRequest(s, jobNumber));
+			QueryProducer.getInstance().putJobInQueue(new LanguageRequest(s, taskNumber));
 			
 			//new QueryProducer(inQueue, new LanguageRequest(s, jobNumber));
 //			try {
@@ -88,7 +88,9 @@ public class ServiceHandler extends HttpServlet {
 //			}
 		}else{
 			//Check out-queue for finished job
-			if (JobProcessor.getInstance().getOutQueue().containsKey(taskNumber)) {
+			outQueue = JobProcessor.getInstance().getOutQueue();
+			
+			if (outQueue.containsKey(taskNumber)) {
 				out.print("Language: " + outQueue.get(taskNumber));
 				outQueue.remove(taskNumber);
 			}

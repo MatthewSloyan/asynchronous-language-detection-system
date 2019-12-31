@@ -63,22 +63,30 @@ public class Parser implements Runnable{
 	}
 	
 	public String analyseQuery(String text) {
-		queryMap = new TreeMap<Integer, LanguageEntry>();
-		
-		for (int i = 0; i < text.length() - k; i++) {
-			CharSequence kmer = text.substring(i, i + k);
-			add(kmer);
+		try {
+			queryMap = new TreeMap<Integer, LanguageEntry>();
+			
+			System.out.println(text);
+			
+			for (int i = 0; i < text.length() - k; i++) {
+				CharSequence kmer = text.substring(i, i + k);
+				add(kmer);
+			}
+			
+	//		for (int i = 0; i <= k; i++) {
+	//			for (int j = 0; j < text.length() - i; j++) {
+	//				CharSequence kmer = text.substring(j, j + i);
+	//				System.out.println(kmer);
+	//				add(kmer);
+	//			}
+	//		}
+			
+			getTop(400);
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		
-//		for (int i = 0; i <= k; i++) {
-//			for (int j = 0; j < text.length() - i; j++) {
-//				CharSequence kmer = text.substring(j, j + i);
-//				System.out.println(kmer);
-//				add(kmer);
-//			}
-//		}
-		
-		getTop(400);
+		System.out.println("Test: " + db.getLanguage(queryMap).toString());
 		
 		return db.getLanguage(queryMap).toString();
 	}
@@ -112,30 +120,30 @@ public class Parser implements Runnable{
 		queryMap = temp;
 	}
 
-	public static void main(String[] args) {
-		//Parser.class.getClassLoader().getResourceAsStream("DBProperty.properties");
-		//URL url = Thread.currentThread().getContextClassLoader().getResource("wili-2018-Small-11750-Edited.txt");  
-		//Parser p = new Parser(url.toString(), 1);
-		
-		Parser p = new Parser("wili-2018-Small-11750-Edited.txt", 4);
-		
-		Database db = new Database();
-		p.setDb(db);
-		Thread t = new Thread(p);
-		t.start();
-		
-		try {
-			t.join();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		
-		db.resize(300);
-		
-		//String s = "'S e baile ann am Moireabh a tha ann an Inbhir Èireann (Beurla: Findhorn). Tha am baile suidhichte dìreach deas air Linne Mhoireibh. Tha Inbhir Èireann mu 3 mìltean iar-thuath air Cinn Lois agus mu 9 mìltean air falbh bho Fharrais. 'S e seo na co-chomharran aige: 57° 39′ 32.4″ Tuath agus 3° 36′ 39.6″ Iar.";
-		//String s = "Go into the bathroom and wash yourself, thank you! Good sir you are the best.";
-		String s = "Разположено е в полите на планината Плана и източния край на Самоковското поле. Също така се намира в близост до планините Витоша, Рила и Верила, като всяка една от тях може да бъде видяна от високите части на селото.";
-		
-		p.analyseQuery(s);
-	}
+//	public static void main(String[] args) {
+//		//Parser.class.getClassLoader().getResourceAsStream("DBProperty.properties");
+//		//URL url = Thread.currentThread().getContextClassLoader().getResource("wili-2018-Small-11750-Edited.txt");  
+//		//Parser p = new Parser(url.toString(), 1);
+//		
+//		Parser p = new Parser("wili-2018-Small-11750-Edited.txt", 4);
+//		
+//		Database db = new Database();
+//		p.setDb(db);
+//		Thread t = new Thread(p);
+//		t.start();
+//		
+//		try {
+//			t.join();
+//		} catch (InterruptedException e) {
+//			e.printStackTrace();
+//		}
+//		
+//		db.resize(300);
+//		
+//		//String s = "'S e baile ann am Moireabh a tha ann an Inbhir Èireann (Beurla: Findhorn). Tha am baile suidhichte dìreach deas air Linne Mhoireibh. Tha Inbhir Èireann mu 3 mìltean iar-thuath air Cinn Lois agus mu 9 mìltean air falbh bho Fharrais. 'S e seo na co-chomharran aige: 57° 39′ 32.4″ Tuath agus 3° 36′ 39.6″ Iar.";
+//		//String s = "Go into the bathroom and wash yourself, thank you! Good sir you are the best.";
+//		String s = "Разположено е в полите на планината Плана и източния край на Самоковското поле. Също така се намира в близост до планините Витоша, Рила и Верила, като всяка една от тях може да бъде видяна от високите части на селото.";
+//		
+//		p.analyseQuery(s);
+//	}
 }

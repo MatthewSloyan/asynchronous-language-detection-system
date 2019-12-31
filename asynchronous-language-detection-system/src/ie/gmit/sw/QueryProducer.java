@@ -24,7 +24,7 @@ public class QueryProducer {
     private void initialize() {
         if (inQueue == null) {
         	inQueue = new ArrayBlockingQueue<>(10);
-            new Thread(new JobProcessor()).start();
+            new Thread(JobProcessor.getInstance()).start();
         }
     }
     
@@ -35,21 +35,5 @@ public class QueryProducer {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-    }
-    
-    class JobProcessor implements Runnable {
-        @Override
-        public void run() {
-        	// Only runs when elements in the queue.
-            while(true) {
-                try {
-                	LanguageRequest eventData = inQueue.take();
-                    //Do stuff
-                	
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
     }
 }

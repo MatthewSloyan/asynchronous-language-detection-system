@@ -21,7 +21,7 @@
   <servlet>
     <servlet-name>service-request-handler</servlet-name>
     <servlet-class>ie.gmit.sw.ServiceHandler</servlet-class>
-    <load-on-startup>0</load-on-startup>
+    <load-on-startup>1</load-on-startup>
   </servlet>
   
   <!-- A servlet name must be bound to a URL mapping, i.e. localhost:8080/doProcess executes the servlet ie.gmit.sw.ServiceHandler in WEB-INF/classes -->

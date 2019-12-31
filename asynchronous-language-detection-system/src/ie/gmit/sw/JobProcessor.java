@@ -5,7 +5,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class JobProcessor implements Runnable {
 	
 	private static JobProcessor instance = null;
-	private ConcurrentHashMap<Integer, String> outQueue = new ConcurrentHashMap<Integer, String>();
+	private static ConcurrentHashMap<String, String> outQueue = new ConcurrentHashMap<String, String>();
 
 	private JobProcessor() {}
     
@@ -16,7 +16,7 @@ public class JobProcessor implements Runnable {
         return instance;
     }
    
-	public ConcurrentHashMap<Integer, String> getOutQueue() {
+	public ConcurrentHashMap<String, String> getOutQueue() {
 		return outQueue;
 	}
 
@@ -30,7 +30,7 @@ public class JobProcessor implements Runnable {
             	Parser parser = InitialiseDatabase.getInstance().getParser();
             	String result = parser.analyseQuery(request.getQuery());
             	
-            	outQueue.put(request.getJobNum(), result);
+            	outQueue.put(request.getTaskNum(), result);
             	
             } catch (InterruptedException e) {
                 e.printStackTrace();

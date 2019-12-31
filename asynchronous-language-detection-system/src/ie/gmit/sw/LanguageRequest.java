@@ -2,19 +2,19 @@ package ie.gmit.sw;
 
 public class LanguageRequest {
 	private String query;
-	private int jobNum;
+	private String taskNum;
 	
-	public LanguageRequest(String query, int jobNum) {
+	public LanguageRequest(String query, String taskNum) {
 		super();
 		this.query = query;
-		this.jobNum = jobNum;
+		this.taskNum = taskNum;
 	}
 
 	public String getQuery() {
 		return query;
 	}
 
-	public int getJobNum() {
-		return jobNum;
+	public String getTaskNum() {
+		return taskNum;
 	}
 }
