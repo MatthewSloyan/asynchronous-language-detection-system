@@ -5,7 +5,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class JobProcessor implements Runnable {
 	
 	private static JobProcessor instance = null;
-	private static ConcurrentHashMap<String, String> outQueue = new ConcurrentHashMap<String, String>();
+	private static ConcurrentHashMap<String, String> outQueueMap = new ConcurrentHashMap<String, String>();
 
 	private JobProcessor() {}
     
@@ -16,8 +16,8 @@ public class JobProcessor implements Runnable {
         return instance;
     }
    
-	public ConcurrentHashMap<String, String> getOutQueue() {
-		return outQueue;
+	public ConcurrentHashMap<String, String> getOutQueueMap() {
+		return outQueueMap;
 	}
 
 	@Override
@@ -32,7 +32,7 @@ public class JobProcessor implements Runnable {
             	String result = parser.analyseQuery(request.getQuery());
             	System.out.println("\nRunning time (ms): " + (System.nanoTime() - startTime));
             	
-            	outQueue.put(request.getTaskNum(), result);
+            	outQueueMap.put(request.getTaskNum(), result);
             	
             } catch (InterruptedException e) {
                 e.printStackTrace();

@@ -1,12 +1,16 @@
 package ie.gmit.sw;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentSkipListMap;
+import java.util.concurrent.ConcurrentSkipListSet;
+import java.util.concurrent.ConcurrentMap;
 
 public class Database {
-	private Map<Language, Map<Integer, LanguageEntry>> db = new HashMap<>();
+	private ConcurrentMap<Language, Map<Integer, LanguageEntry>> db = new ConcurrentSkipListMap<>();
 	
 	public void add(CharSequence s, Language lang) {
 		int kmer = s.hashCode();
+		//System.out.println(lang);
 		Map<Integer, LanguageEntry> langDb = getLanguageEntries(lang);
 		
 		int frequency = 1;
@@ -22,7 +26,7 @@ public class Database {
 		if (db.containsKey(lang)) {
 			langDb = db.get(lang);
 		}else {
-			langDb = new HashMap<Integer, LanguageEntry>();
+			langDb = new ConcurrentSkipListMap<Integer, LanguageEntry>();
 			db.put(lang, langDb);
 		}
 		return langDb;
@@ -37,7 +41,7 @@ public class Database {
 	}
 	
 	public Map<Integer, LanguageEntry> getTop(int max, Language lang) {
-		Map<Integer, LanguageEntry> temp = new HashMap<>();
+		Map<Integer, LanguageEntry> temp = new ConcurrentSkipListMap<>();
 		List<LanguageEntry> les = new ArrayList<>(db.get(lang).values());
 		Collections.sort(les);
 		
@@ -53,7 +57,7 @@ public class Database {
 	}
 	
 	public Language getLanguage(Map<Integer, LanguageEntry> query) {
-		TreeSet<OutOfPlaceMetric> oopm = new TreeSet<>();
+		ConcurrentSkipListSet<OutOfPlaceMetric> oopm = new ConcurrentSkipListSet<>();
 		
 		Set<Language> langs = db.keySet();
 		for (Language lang : langs) {
@@ -65,14 +69,13 @@ public class Database {
 	private int getOutOfPlaceDistance(Map<Integer, LanguageEntry> query, Map<Integer, LanguageEntry> subject) {
 		int distance = 0;
 		
-		Set<LanguageEntry> les = new TreeSet<>(query.values());		
+		ConcurrentSkipListSet<LanguageEntry> les = new ConcurrentSkipListSet<>(query.values());		
 		for (LanguageEntry q : les) {
 			LanguageEntry s = subject.get(q.getKmer());
 			if (s == null) {
 				distance += subject.size() + 1;
 			}else {
 				distance += s.getRank() - q.getRank();
-				//System.out.println(q.getRank());
 			}
 		}
 		return distance;
@@ -90,7 +93,7 @@ public class Database {
 			langCount++;
 			sb.append(lang.name() + "->\n");
 			 
-			 Collection<LanguageEntry> m = new TreeSet<>(db.get(lang).values());
+			 Collection<LanguageEntry> m = new ConcurrentSkipListSet<>(db.get(lang).values());
 			 kmerCount += m.size();
 			 for (LanguageEntry le : m) {
 				 sb.append("\t" + le + "\n");

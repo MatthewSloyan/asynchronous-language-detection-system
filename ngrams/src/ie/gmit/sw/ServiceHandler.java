@@ -3,6 +3,7 @@ package ie.gmit.sw;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Map;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
@@ -38,7 +39,7 @@ public class ServiceHandler extends HttpServlet {
 	private static int jobNumber = 0; //The number of the task in the async queue
 	
 	private File f;
-	private ConcurrentHashMap<String, String> outQueue = null;
+	//private ConcurrentHashMap<String, String> outQueue = null;
 	//private List<LanguageRequest> inQueue = new LinkedList<>();
 	//private BlockingQueue <LanguageRequest> inQueue = new ArrayBlockingQueue<>(10);
 
@@ -76,8 +77,8 @@ public class ServiceHandler extends HttpServlet {
 		if (taskNumber == null){
 			taskNumber = new String("T" + jobNumber);
 			jobNumber++;
-			//Add job to in-queue
 			
+			//Add job to in-queue
 			JobProducer.getInstance().putJobInQueue(new LanguageRequest(s, taskNumber));
 			
 			//new QueryProducer(inQueue, new LanguageRequest(s, jobNumber));
@@ -88,7 +89,7 @@ public class ServiceHandler extends HttpServlet {
 //			}
 		}else{
 			//Check out-queue for finished job
-			outQueue = JobProcessor.getInstance().getOutQueue();
+			Map<String, String> outQueue = JobProcessor.getInstance().getOutQueueMap();
 			
 			if (outQueue.containsKey(taskNumber)) {
 				out.print("Language: " + outQueue.get(taskNumber));
@@ -130,7 +131,7 @@ public class ServiceHandler extends HttpServlet {
 		out.print("</html>");
 
 		out.print("<script>");
-		out.print("var wait=setTimeout(\"document.frmRequestDetails.submit();\", 5000);");
+		out.print("var wait=setTimeout(\"document.frmRequestDetails.submit();\", 4000);");
 		out.print("</script>");
 	}
 

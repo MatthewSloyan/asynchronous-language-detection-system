@@ -8,8 +8,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class Parser implements Runnable{
 	private Map<Integer, LanguageEntry> queryMap = null;
@@ -35,18 +37,27 @@ public class Parser implements Runnable{
 			String line = null;
 			
 			//Start a thread pool of size 2, and loop
-			//ExecutorService es = Executors.newFixedThreadPool(5);
+			ExecutorService es = Executors.newFixedThreadPool(10);
 			
 			while((line = br.readLine()) != null) {
-//				String[] record = line.trim().split("@");
-//				if (record.length != 2) 
-//					continue;
-//				
-//				es.execute(new Processor(record));
 				String[] record = line.trim().split("@");
 				if (record.length != 2) 
 					continue;
-				parse(record[0], record[1]);
+				
+				es.execute(new Processor(record));
+//				String[] record = line.trim().split("@");
+//				if (record.length != 2) 
+//					continue;
+//				parse(record[0], record[1]);
+			}
+			
+			es.shutdown();
+			
+			// Code adapted from: https://stackoverflow.com/questions/1250643/how-to-wait-for-all-threads-to-finish-using-executorservice
+			try {
+				es.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
 			}
 			
 			br.close();
@@ -136,8 +147,6 @@ public class Parser implements Runnable{
 			if (rank == max) 
 				break;
 			rank++;
-			
-			System.out.println(le.getFrequency());
 		}
 		
 		queryMap = temp;
