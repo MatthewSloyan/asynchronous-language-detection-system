@@ -7,6 +7,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutorService;
@@ -36,6 +38,8 @@ public class Parser implements Runnable{
 			BufferedReader br = new BufferedReader(new InputStreamReader(this.getClass().getClassLoader().getResourceAsStream(file)));
 			String line = null;
 			
+			BlockingQueue <Kmer> queue = new ArrayBlockingQueue<>(100);
+			
 			//Start a thread pool of size 2, and loop
 			ExecutorService es = Executors.newFixedThreadPool(10);
 			
@@ -44,10 +48,11 @@ public class Parser implements Runnable{
 				if (record.length != 2) 
 					continue;
 				
-				es.execute(new Processor(record));
+				es.execute(new FileProcessor(queue, record));
 //				String[] record = line.trim().split("@");
 //				if (record.length != 2) 
 //					continue;
+//				
 //				parse(record[0], record[1]);
 			}
 			
@@ -65,35 +70,6 @@ public class Parser implements Runnable{
 		catch (Exception e) {
 			e.printStackTrace();
 		}
-	}
-
-	private void parse(String text, String lang, int... ks) {
-
-		Language language = Language.valueOf(lang);
-		
-		for (int i = 0; i < text.length() - k; i++) {
-			CharSequence kmer = text.substring(i, i + k);
-			db.add(kmer, language);
-		}
-		
-//		//Start a thread pool of size 2, and loop
-//		ExecutorService es = Executors.newFixedThreadPool(2);
-//		
-//		for (int i = 0; i <= k; i++) {
-//			es.execute(new Processor(text, language, i));
-//		}
-		
-		//Start a single thread executor for ShingleTaker, and return fileMap
-		//ExecutorService es1 = Executors.newSingleThreadExecutor();
-		//Future<ConcurrentHashMap<Integer, List<Index>>> fileMap = es1.submit(new ShingleTaker(queue, files.length));
-		
-		// Will thread for speed
-//		for (int i = 0; i <= k; i++) {
-//			for (int j = 0; j < text.length() - i; j++) {
-//				CharSequence kmer = text.substring(j, j + i);
-//				db.add(kmer, language);
-//			}
-//		}
 	}
 	
 	public String analyseQuery(String text) {
@@ -152,23 +128,24 @@ public class Parser implements Runnable{
 		queryMap = temp;
 	}
 	
-	private class Processor implements Runnable {
-		private String[] record;
-		
-		public Processor(String[] record) {
-			super();
-			this.record = record;
-		}
-
-		@Override
-	    public void run() {
-            try {
-            	parse(record[0], record[1]);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-	    }
-	}
+	
+//	private class Processor implements Runnable {
+//		private String[] record;
+//		
+//		public Processor(String[] record) {
+//			super();
+//			this.record = record;
+//		}
+//
+//		@Override
+//	    public void run() {
+//            try {
+//            	parse(record[0], record[1]);
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//	    }
+//	}
 	
 //	private class Processor implements Runnable {
 //		private String text;
