@@ -37,25 +37,13 @@ import javax.servlet.http.HttpServletResponse;
 public class ServiceHandler extends HttpServlet {
 	private String languageDataSet = null; //This variable is shared by all HTTP requests for the servlet
 	private static int jobNumber = 0; //The number of the task in the async queue
-	
 	private File f;
-	//private ConcurrentHashMap<String, String> outQueue = null;
-	//private List<LanguageRequest> inQueue = new LinkedList<>();
-	//private BlockingQueue <LanguageRequest> inQueue = new ArrayBlockingQueue<>(10);
 
 	public void init() throws ServletException {
 		ServletContext ctx = getServletContext(); //Get a handle on the application context
 		languageDataSet = ctx.getInitParameter("LANGUAGE_DATA_SET"); //Reads the value from the <context-param> in web.xml
 
 		//You can start to build the subject database at this point. The init() method is only ever called once during the life cycle of a servlet
-		
-		//start the running time of program to be printed out for user
-//		long startTime = System.nanoTime(); 
-//		//running time
-//		System.out.println("\nRunning time (ms): " + (System.nanoTime() - startTime));
-//		final long usedMem = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
-//		System.out.println("Used memory: " + usedMem + "\n");
-
 		f = new File(languageDataSet);
 		
 		new InitialiseDatabase().initialise(languageDataSet);
@@ -80,19 +68,12 @@ public class ServiceHandler extends HttpServlet {
 			
 			//Add job to in-queue
 			JobProducer.getInstance().putJobInQueue(new LanguageRequest(s, taskNumber));
-			
-			//new QueryProducer(inQueue, new LanguageRequest(s, jobNumber));
-//			try {
-//				inQueue.put(new LanguageRequest(s, jobNumber));
-//			} catch (InterruptedException e) {
-//				e.printStackTrace();
-//			}
 		}else{
 			//Check out-queue for finished job
 			Map<String, String> outQueue = JobProcessor.getInstance().getOutQueueMap();
 			
 			if (outQueue.containsKey(taskNumber)) {
-				out.print("Language: " + outQueue.get(taskNumber));
+				out.print("<H3>Predicted Language: " + outQueue.get(taskNumber) + "</H3>");
 				outQueue.remove(taskNumber);
 			}
 		}
@@ -105,27 +86,13 @@ public class ServiceHandler extends HttpServlet {
 		out.print("<div id=\"r\"></div>");
 
 		out.print("<font color=\"#993333\"><b>");
-		out.print("Language Dataset is located at " + languageDataSet + " and is <b><u>" + f.length() + "</u></b> bytes in size");
+		//out.print("Language Dataset is located at " + languageDataSet + " and is <b><u>" + f.length() + "</u></b> bytes in size");
 		out.print("<br>Option(s): " + option);
 		out.print("<br>Query Text : " + s);
 		out.print("</font><p/>");
-
-		out.print("<br>This servlet should only be responsible for handling client request and returning responses. Everything else should be handled by different objects. ");
-		out.print("Note that any variables declared inside this doGet() method are thread safe. Anything defined at a class level is shared between HTTP requests.");
-		out.print("</b></font>");
-
-		out.print("<P> Next Steps:");
-		out.print("<OL>");
-		out.print("<LI>Generate a big random number to use a a job number, or just increment a static long variable declared at a class level, e.g. jobNumber.");
-		out.print("<LI>Create some type of an object from the request variables and jobNumber.");
-		out.print("<LI>Add the message request object to a LinkedList or BlockingQueue (the IN-queue)");
-		out.print("<LI>Return the jobNumber to the client web browser with a wait interval using <meta http-equiv=\"refresh\" content=\"10\">. The content=\"10\" will wait for 10s.");
-		out.print("<LI>Have some process check the LinkedList or BlockingQueue for message requests.");
-		out.print("<LI>Poll a message request from the front of the queue and pass the task to the language detection service.");
-		out.print("<LI>Add the jobNumber as a key in a Map (the OUT-queue) and an initial value of null.");
-		out.print("<LI>Return the result of the language detection system to the client next time a request for the jobNumber is received and the task has been complete (value is not null).");
-		out.print("</OL>");
-
+		
+		out.print("<button onclick=\"location.href='http://localhost:8080/ngrams/'\" type=\"button\">New Query</button>");
+		
 		out.print("<form method=\"POST\" name=\"frmRequestDetails\">");
 		out.print("<input name=\"cmbOptions\" type=\"hidden\" value=\"" + option + "\">");
 		out.print("<input name=\"query\" type=\"hidden\" value=\"" + s + "\">");
@@ -135,7 +102,7 @@ public class ServiceHandler extends HttpServlet {
 		out.print("</html>");
 
 		out.print("<script>");
-		out.print("var wait=setTimeout(\"document.frmRequestDetails.submit();\", 4000);");
+		out.print("var wait=setTimeout(\"document.frmRequestDetails.submit();\", 3000);");
 		out.print("</script>");
 	}
 

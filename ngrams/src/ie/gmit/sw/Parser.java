@@ -22,7 +22,7 @@ public class Parser implements Runnable{
 	private String file;
 	private int k;
 
-	BlockingQueue <Kmer> queue = new ArrayBlockingQueue<>(10);
+	BlockingQueue <Kmer> queue = new ArrayBlockingQueue<>(20);
 	
 	public Parser(String file, int k) {
 		super();
@@ -39,15 +39,15 @@ public class Parser implements Runnable{
 			String[] record = null;
 			
 			//Start a single thread executor for QueryFileParser, and return queryMap
-			ExecutorService es1 = Executors.newSingleThreadExecutor();
-			es1.submit(new KmerProcessor(queue));
+			//ExecutorService es1 = Executors.newSingleThreadExecutor();
+			//es1.submit(new KmerProcessor(queue));
 			
 			//Start a thread pool of size 2, and loop
 			ExecutorService es = Executors.newFixedThreadPool(10);
 			
 			while((line = br.readLine()) != null) {
 				record = line.trim().split("@");
-				if (record.length != 2) 
+				if (record.length != 2)
 					continue;
 				
 				es.execute(new FileProcessor(queue, record));
@@ -65,8 +65,8 @@ public class Parser implements Runnable{
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-			queue.put(new Poison(record[0].hashCode(), record[1]));
-			es1.shutdown();
+			//queue.put(new Poison(record[0].hashCode(), record[1]));
+			//es1.shutdown();
 //			
 //			try {
 //				es1.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);

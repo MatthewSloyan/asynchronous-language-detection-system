@@ -45,8 +45,9 @@ public class FileProcessor implements Runnable {
 			for (int i = 1; i <= k; i++) {
 				for (int j = 0; j < text.length() - i; j+=i) {
 					CharSequence kmer = text.substring(j, j + i);
-					queue.put(new Kmer (kmer.hashCode(), lang));
+					//queue.put(new Kmer (kmer.hashCode(), lang));
 					//Database.getInstance().add(lang, kmer.hashCode());
+					new DatabaseProxy().add(lang, kmer.hashCode());
 					//System.out.println("Queue Put: " + kmer);
 				}
 			}

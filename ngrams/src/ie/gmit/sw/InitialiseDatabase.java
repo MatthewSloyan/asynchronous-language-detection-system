@@ -15,7 +15,7 @@ public class InitialiseDatabase {
 			e.printStackTrace();
 		}
 		
-		Database.getInstance().resize(300);
+		new DatabaseProxy().resize(300);
 		
 		// running time
 		System.out.println("\nRunning time (ms): " + (System.nanoTime() - startTime));

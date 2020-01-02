@@ -6,7 +6,7 @@ import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-public class Database {
+class Database implements Databaseator{
 	
 	private static Database instance = new Database();
 	private static ConcurrentMap<Language, Map<Integer, LanguageEntry>> db = new ConcurrentSkipListMap<>();
@@ -18,18 +18,13 @@ public class Database {
     }
 	
 	public void add(String lang, int kmer) {
-		//System.out.println(lang);
 		Language language = Language.valueOf(lang);
 		Map<Integer, LanguageEntry> langDb = getLanguageEntries(language);
 		
-		int frequency = 1;
-		if (langDb.containsKey(kmer)) {
-			frequency += langDb.get(kmer).getFrequency();
-		}
-		langDb.put(kmer, new LanguageEntry(kmer, frequency));
-		//db.put(language, langDb);
+		langDb.put(kmer, new LanguageEntry(kmer, new Utilities().addToFrequency(langDb, kmer)));
+		db.put(language, langDb);
 	}
-	
+
 	private Map<Integer, LanguageEntry> getLanguageEntries(Language lang){
 		Map<Integer, LanguageEntry> langDb = null; 
 		if (db.containsKey(lang)) {
@@ -50,17 +45,11 @@ public class Database {
 	}
 	
 	private Map<Integer, LanguageEntry> getTop(int max, Language lang) {
-		Map<Integer, LanguageEntry> temp = new ConcurrentSkipListMap<>();
+		
 		List<LanguageEntry> les = new ArrayList<>(db.get(lang).values());
 		Collections.sort(les);
 		
-		int rank = 1;
-		for (LanguageEntry le : les) {
-			le.setRank(rank);
-			temp.put(le.getKmer(), le);			
-			if (rank == max) break;
-			rank++;
-		}
+		Map<Integer, LanguageEntry> temp = new Utilities().scaleByRank(les, max);
 		
 		return temp;
 	}
@@ -90,25 +79,25 @@ public class Database {
 		return distance;
 	}
 
-	@Override
-	public String toString() {
-		
-		StringBuilder sb = new StringBuilder();
-		
-		int langCount = 0;
-		int kmerCount = 0;
-		Set<Language> keys = db.keySet();
-		for (Language lang : keys) {
-			langCount++;
-			sb.append(lang.name() + "->\n");
-			 
-			 Collection<LanguageEntry> m = new ConcurrentSkipListSet<>(db.get(lang).values());
-			 kmerCount += m.size();
-			 for (LanguageEntry le : m) {
-				 sb.append("\t" + le + "\n");
-			 }
-		}
-		sb.append(kmerCount + " total k-mers in " + langCount + " languages"); 
-		return sb.toString();
-	}
+//	@Override
+//	public String toString() {
+//		
+//		StringBuilder sb = new StringBuilder();
+//		
+//		int langCount = 0;
+//		int kmerCount = 0;
+//		Set<Language> keys = db.keySet();
+//		for (Language lang : keys) {
+//			langCount++;
+//			sb.append(lang.name() + "->\n");
+//			 
+//			 Collection<LanguageEntry> m = new ConcurrentSkipListSet<>(db.get(lang).values());
+//			 kmerCount += m.size();
+//			 for (LanguageEntry le : m) {
+//				 sb.append("\t" + le + "\n");
+//			 }
+//		}
+//		sb.append(kmerCount + " total k-mers in " + langCount + " languages"); 
+//		return sb.toString();
+//	}
 }
