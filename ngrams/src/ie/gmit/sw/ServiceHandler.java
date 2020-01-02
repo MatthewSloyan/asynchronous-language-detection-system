@@ -58,7 +58,7 @@ public class ServiceHandler extends HttpServlet {
 
 		f = new File(languageDataSet);
 		
-		InitialiseDatabase.getInstance().initialise(languageDataSet);
+		new InitialiseDatabase().initialise(languageDataSet);
 	}
 
 	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -74,7 +74,7 @@ public class ServiceHandler extends HttpServlet {
 		out.print("</head>");
 		out.print("<body>");
 		
-		if (taskNumber == null){
+		if (taskNumber == null && s != null){
 			taskNumber = new String("T" + jobNumber);
 			jobNumber++;
 			
@@ -96,7 +96,11 @@ public class ServiceHandler extends HttpServlet {
 				outQueue.remove(taskNumber);
 			}
 		}
+		
+		display(out, option, s, taskNumber);
+	}
 
+	private void display(PrintWriter out, String option, String s, String taskNumber) {
 		out.print("<H1>Processing request for Job#: " + taskNumber + "</H1>");
 		out.print("<div id=\"r\"></div>");
 
@@ -138,4 +142,5 @@ public class ServiceHandler extends HttpServlet {
 	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		doGet(req, resp);
  	}
+	
 }

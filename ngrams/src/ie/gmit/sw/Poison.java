@@ -13,8 +13,9 @@ public class Poison extends Kmer{
 	* @param language name 
 	* @param kmer as a hashcode
 	*/
-	public Poison(int kmer, Language language) {
+	public Poison(int kmer, String language) {
 		super(kmer, language);
+		System.out.println("Poison");
 	}
 }
 

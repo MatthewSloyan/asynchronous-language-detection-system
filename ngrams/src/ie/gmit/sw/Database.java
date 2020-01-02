@@ -3,22 +3,31 @@ package ie.gmit.sw;
 import java.util.*;
 import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.ConcurrentSkipListSet;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 public class Database {
-	private ConcurrentMap<Language, Map<Integer, LanguageEntry>> db = new ConcurrentSkipListMap<>();
 	
-	public void add(CharSequence s, Language lang) {
-		int kmer = s.hashCode();
+	private static Database instance = new Database();
+	private static ConcurrentMap<Language, Map<Integer, LanguageEntry>> db = new ConcurrentSkipListMap<>();
+
+	private Database() {}
+    
+    public static Database getInstance() {
+        return instance;
+    }
+	
+	public void add(String lang, int kmer) {
 		//System.out.println(lang);
-		Map<Integer, LanguageEntry> langDb = getLanguageEntries(lang);
+		Language language = Language.valueOf(lang);
+		Map<Integer, LanguageEntry> langDb = getLanguageEntries(language);
 		
 		int frequency = 1;
 		if (langDb.containsKey(kmer)) {
 			frequency += langDb.get(kmer).getFrequency();
 		}
 		langDb.put(kmer, new LanguageEntry(kmer, frequency));
-		db.put(lang, langDb);
+		//db.put(language, langDb);
 	}
 	
 	private Map<Integer, LanguageEntry> getLanguageEntries(Language lang){
@@ -40,7 +49,7 @@ public class Database {
 		}
 	}
 	
-	public Map<Integer, LanguageEntry> getTop(int max, Language lang) {
+	private Map<Integer, LanguageEntry> getTop(int max, Language lang) {
 		Map<Integer, LanguageEntry> temp = new ConcurrentSkipListMap<>();
 		List<LanguageEntry> les = new ArrayList<>(db.get(lang).values());
 		Collections.sort(les);

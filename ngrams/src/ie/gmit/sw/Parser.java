@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 import java.util.HashMap;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
@@ -13,22 +14,20 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
 public class Parser implements Runnable{
-	private Map<Integer, LanguageEntry> queryMap = null;
-	private Database db = null;
 	private String file;
 	private int k;
+
+	BlockingQueue <Kmer> queue = new ArrayBlockingQueue<>(10);
 	
 	public Parser(String file, int k) {
 		super();
 		this.file = file;
 		this.k = k;
-	}
-
-	public void setDb(Database db) {
-		this.db = db;
 	}
 	
 	public void run() {
@@ -37,33 +36,56 @@ public class Parser implements Runnable{
 			// Code adapted to get resource in web application: https://stackoverflow.com/questions/10978380/how-to-read-a-text-file-from-a-web-application
 			BufferedReader br = new BufferedReader(new InputStreamReader(this.getClass().getClassLoader().getResourceAsStream(file)));
 			String line = null;
+			String[] record = null;
 			
-			BlockingQueue <Kmer> queue = new ArrayBlockingQueue<>(100);
+			//Start a single thread executor for QueryFileParser, and return queryMap
+			ExecutorService es1 = Executors.newSingleThreadExecutor();
+			es1.submit(new KmerProcessor(queue));
 			
 			//Start a thread pool of size 2, and loop
 			ExecutorService es = Executors.newFixedThreadPool(10);
 			
 			while((line = br.readLine()) != null) {
-				String[] record = line.trim().split("@");
+				record = line.trim().split("@");
 				if (record.length != 2) 
 					continue;
 				
 				es.execute(new FileProcessor(queue, record));
-//				String[] record = line.trim().split("@");
-//				if (record.length != 2) 
-//					continue;
-//				
-//				parse(record[0], record[1]);
+				
+//				if (br.readLine() == null) {
+//					queue.put(new Poison(record[0].hashCode(), record[1]));
+//				}
 			}
-			
+
 			es.shutdown();
 			
-			// Code adapted from: https://stackoverflow.com/questions/1250643/how-to-wait-for-all-threads-to-finish-using-executorservice
+			//Code adapted from: https://stackoverflow.com/questions/1250643/how-to-wait-for-all-threads-to-finish-using-executorservice
 			try {
 				es.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
+			queue.put(new Poison(record[0].hashCode(), record[1]));
+			es1.shutdown();
+//			
+//			try {
+//				es1.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
+//			} catch (InterruptedException e) {
+//				e.printStackTrace();
+//			}
+			
+			//Start a single thread executor for QueryFileParser, and return queryMap
+//			ExecutorService es1 = Executors.newSingleThreadExecutor();
+//			es1.submit(new KmerProcessor(queue));
+			
+//			Thread t = new Thread(new KmerProcessor(queue));
+//			t.start();
+			
+//			try {
+//				t.join();
+//			} catch (InterruptedException e) {
+//				e.printStackTrace();
+//			}
 			
 			br.close();
 		}
@@ -72,61 +94,38 @@ public class Parser implements Runnable{
 		}
 	}
 	
-	public String analyseQuery(String text) {
-		try {
-			queryMap = new HashMap<Integer, LanguageEntry>();
-			
-			System.out.println(text);
-			
-			for (int i = 0; i < text.length() - k; i++) {
-				CharSequence kmer = text.substring(i, i + k);
-				add(kmer);
-			}
-			
-//			for (int i = 0; i <= k; i++) {
-//				for (int j = 0; j < text.length() - i; j++) {
-//					CharSequence kmer = text.substring(j, j + i);
-//					System.out.println(kmer);
-//					add(kmer);
-//				}
+//	private void parseLine(String text, String lang) {
+//		int k = 4;
+//		
+//		try {
+//			for (int i = 0; i < text.length() - k; i++) {
+//				CharSequence kmer = text.substring(i, i + k);
+//				queue.put(new Kmer (kmer.hashCode(), lang));
+//				//System.out.println(kmer);
 //			}
-			
-			getTop(400);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+//		} catch (InterruptedException e) {
+//			e.printStackTrace();
+//		}
 		
-		System.out.println("Test: " + db.getLanguage(queryMap).toString());
+//		//Start a thread pool of size 2, and loop
+//		ExecutorService es = Executors.newFixedThreadPool(2);
+//		
+//		for (int i = 0; i <= k; i++) {
+//			es.execute(new Processor(text, language, i));
+//		}
 		
-		return db.getLanguage(queryMap).toString();
-	}
-	
-	public void add(CharSequence s) {
-		int kmer = s.hashCode();
+		//Start a single thread executor for ShingleTaker, and return fileMap
+		//ExecutorService es1 = Executors.newSingleThreadExecutor();
+		//Future<ConcurrentHashMap<Integer, List<Index>>> fileMap = es1.submit(new ShingleTaker(queue, files.length));
 		
-		int frequency = 1;
-		if (queryMap.containsKey(kmer)) {
-			frequency += queryMap.get(kmer).getFrequency();
-		}
-		queryMap.put(kmer, new LanguageEntry(kmer, frequency));
-	}
-	
-	public void getTop(int max) {
-		Map<Integer, LanguageEntry> temp = new HashMap<>();
-		List<LanguageEntry> les = new ArrayList<>(queryMap.values());
-		Collections.sort(les);
-		
-		int rank = 1;
-		for (LanguageEntry le : les) {
-			le.setRank(rank);
-			temp.put(le.getKmer(), le);			
-			if (rank == max) 
-				break;
-			rank++;
-		}
-		
-		queryMap = temp;
-	}
+		// Will thread for speed
+//		for (int i = 0; i <= k; i++) {
+//			for (int j = 0; j < text.length() - i; j++) {
+//				CharSequence kmer = text.substring(j, j + i);
+//				db.add(kmer, language);
+//			}
+//		}
+	//}
 	
 	
 //	private class Processor implements Runnable {

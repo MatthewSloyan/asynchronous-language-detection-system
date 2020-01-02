@@ -5,15 +5,12 @@ import java.util.concurrent.BlockingQueue;
 
 public class JobProducer {
 	
-	private static JobProducer instance = null;
+	private static JobProducer instance = new JobProducer();
 	private static BlockingQueue<LanguageRequest> inQueue = null;
 	
 	private JobProducer() {}
     
     public static JobProducer getInstance() {
-        if (instance == null) {
-            instance = new JobProducer();
-        }
         return instance;
     }
     

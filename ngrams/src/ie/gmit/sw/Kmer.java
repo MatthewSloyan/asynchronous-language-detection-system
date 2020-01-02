@@ -2,19 +2,19 @@ package ie.gmit.sw;
 
 public class Kmer {
 	private int kmer;
-	private Language language;
+	private String language;
 	
-	public Kmer(int kmer, Language language) {
+	public Kmer(int kmer, String language) {
 		super();
 		this.kmer = kmer;
 		this.language = language;
 	}
 
-	public Language getLanguage() {
-		return language;
-	}
-
 	public int getKmer() {
 		return kmer;
+	}
+
+	public String getLanguage() {
+		return language;
 	}
 }

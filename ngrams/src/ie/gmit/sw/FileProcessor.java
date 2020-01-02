@@ -18,23 +18,39 @@ public class FileProcessor implements Runnable {
         	parseLine(record[0], record[1]);
         	
         	//finishes
-        	queue.put(new Poison(record[0].hashCode(), Language.valueOf(record[1]))); 
+        	//queue.put(new Poison(record[0].hashCode(), Language.valueOf(record[1]))); 
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 	
-	private void parseLine(String text, String lang) {
+	private void parseLine(String text, String lang) throws InterruptedException {
 
-		Language language = Language.valueOf(lang);
+		//Language language = Language.valueOf(lang);
 		int k = 4;
 		
 		try {
-			for (int i = 0; i < text.length() - k; i++) {
-				CharSequence kmer = text.substring(i, i + k);
-				queue.put(new Kmer (kmer.hashCode(), language));
+//			for (int i = 0; i < text.length() - k; i++) {
+//				CharSequence kmer = text.substring(i, i + k);
+//				//Database.getInstance().add(language, kmer.hashCode());
+//				queue.put(new Kmer (kmer.hashCode(), lang));
+//				//System.out.println("Queue Put: " + kmer);
+//			}
+//			for (int i = 0; i <= k; i++) {
+//				for (int j = 0; j < text.length() - i; j++) {
+//					CharSequence kmer = text.substring(j, j + i);
+//					queue.put(new Kmer (kmer.hashCode(), language));
+//				}
+//			}
+			for (int i = 1; i <= k; i++) {
+				for (int j = 0; j < text.length() - i; j+=i) {
+					CharSequence kmer = text.substring(j, j + i);
+					queue.put(new Kmer (kmer.hashCode(), lang));
+					//Database.getInstance().add(lang, kmer.hashCode());
+					//System.out.println("Queue Put: " + kmer);
+				}
 			}
-		} catch (InterruptedException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		
