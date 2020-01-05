@@ -1,5 +1,10 @@
 package ie.gmit.sw;
 
+/**
+* Supplied Enum class that contains all language names.
+* 
+* @author John Healy
+*/
 public enum Language {
 	Achinese ("Achinese"),
 	Afrikaans ("Afrikaans"),

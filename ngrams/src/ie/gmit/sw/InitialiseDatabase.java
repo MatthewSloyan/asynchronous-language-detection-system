@@ -24,26 +24,26 @@ public class InitialiseDatabase {
 	* @see DatabaseProxy
 	*/
 	public void initialise(String languageDataSet) {
-//		do {
-//			System.out.println("Please enter path to Wili File.");
-//			filePath = console.nextLine();
-//
-//			File f = new File(filePath);
-//			isValid = true;
-//		
-//			//check if file exists, keeps asking till it is valid
-//			if (f.exists()) {
-//				isValid = false;
-//			} else {
-//				System.out.println("File does not exist, please try again.");
-//			}
-//		} while (isValid);
+		do {
+			System.out.println("Please enter path to Wili File.");
+			filePath = console.nextLine();
+
+			File f = new File(filePath);
+			isValid = true;
+		
+			//check if file exists, keeps asking till it is valid
+			if (f.exists()) {
+				isValid = false;
+			} else {
+				System.out.println("File does not exist, please try again.");
+			}
+		} while (isValid);
 		
 		// start the running time of program to be printed out for user
 		long startTime = System.nanoTime(); 
 		
 		// Start a new thread to Parse the file line by line.
-		Thread t = new Thread(new Parser(languageDataSet, 4));
+		Thread t = new Thread(new Parser(filePath, 4));
 		t.start();
 		
 		try {

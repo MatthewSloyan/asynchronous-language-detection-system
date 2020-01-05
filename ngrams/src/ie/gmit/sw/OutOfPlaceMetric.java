@@ -1,5 +1,10 @@
 package ie.gmit.sw;
 
+/**
+* Supplied OutOfPlaceMetric class that is used to get the OutOfPlaceMetric distance between the query and database maps.
+* 
+* @author John Healy
+*/
 public class OutOfPlaceMetric implements Comparable<OutOfPlaceMetric>{
 	private Language lang;
 	private int distance;
@@ -21,10 +26,5 @@ public class OutOfPlaceMetric implements Comparable<OutOfPlaceMetric>{
 	@Override
 	public int compareTo(OutOfPlaceMetric o) {
 		return Integer.compare(this.getAbsoluteDistance(), o.getAbsoluteDistance());
-	}
-
-	@Override
-	public String toString() {
-		return "[lang=" + lang + ", distance=" + getAbsoluteDistance() + "]";
 	}
 }

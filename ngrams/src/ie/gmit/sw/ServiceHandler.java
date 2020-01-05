@@ -96,7 +96,12 @@ public class ServiceHandler extends HttpServlet {
 			taskNumber = new String("T" + jobNumber);
 			jobNumber++;
 			
-			//Add job to in-queue
+			// Add job to in-queue
+			// Only adds the first 400 characters in the string, so massive blocks are not added which could slow down the system.
+			if (query.length() > 400) {
+				query = query.substring(0, 400);
+			}
+			
 			JobProducer.getInstance().putJobInQueue(new LanguageRequest(query, taskNumber));
 		}else{
 			//Check out-queue for finished job

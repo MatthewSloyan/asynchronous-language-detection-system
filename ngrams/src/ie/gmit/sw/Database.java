@@ -15,7 +15,7 @@ import java.util.concurrent.ConcurrentHashMap;
 * Also it allows for concurrency between multiple threads as an Thread Pool is used to add Kmers.
 * 
 * @see Databaseable
-* @author Matthew Sloyan
+* @author Matthew Sloyan (Methods supplied by John Healy)
 */
 class Database implements Databaseable{
 	
@@ -36,6 +36,7 @@ class Database implements Databaseable{
 	* @param lang String name of language which saves space rather than passing whole object.
 	* @param kmer hashcode of kmer
 	*
+	* @see LanguageEntry
 	* @see Utilities
 	*/
 	public void add(String lang, int kmer) {

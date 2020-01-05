@@ -1,6 +1,7 @@
 package ie.gmit.sw;
 
 import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -46,9 +47,9 @@ public class Parser implements Runnable{
 	*/
 	public void run() {
 		try {
-			//BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
+			BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
 			// Code adapted to get resource in web application: https://stackoverflow.com/questions/10978380/how-to-read-a-text-file-from-a-web-application
-			BufferedReader br = new BufferedReader(new InputStreamReader(this.getClass().getClassLoader().getResourceAsStream(file)));
+			//BufferedReader br = new BufferedReader(new InputStreamReader(this.getClass().getClassLoader().getResourceAsStream(file)));
 			String line = null;
 			String[] record = null;
 			
@@ -65,7 +66,9 @@ public class Parser implements Runnable{
 			
 			es.shutdown();
 			
-			//Code adapted from: https://stackoverflow.com/questions/1250643/how-to-wait-for-all-threads-to-finish-using-executorservice
+			// Code adapted from below to wait for an ExecutorService to finish running, 
+			// as problems where encountered when trying to do it in the background on startup of server.
+			// https://stackoverflow.com/questions/1250643/how-to-wait-for-all-threads-to-finish-using-executorservice
 			try {
 				es.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
 			} catch (InterruptedException e) {
