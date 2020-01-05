@@ -1,7 +1,6 @@
 package ie.gmit.sw;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -9,7 +8,7 @@ import java.util.concurrent.ConcurrentMap;
 class Database implements Databaseator{
 	
 	private static Database instance = new Database();
-	private static ConcurrentMap<Language, Map<Integer, LanguageEntry>> db = new ConcurrentSkipListMap<>();
+	private static ConcurrentMap<Language, Map<Integer, LanguageEntry>> db = new ConcurrentHashMap<>();
 
 	private Database() {}
     
@@ -22,7 +21,7 @@ class Database implements Databaseator{
 		Map<Integer, LanguageEntry> langDb = getLanguageEntries(language);
 		
 		langDb.put(kmer, new LanguageEntry(kmer, new Utilities().addToFrequency(langDb, kmer)));
-		db.put(language, langDb);
+		//db.put(language, langDb);
 	}
 
 	private Map<Integer, LanguageEntry> getLanguageEntries(Language lang){
@@ -30,7 +29,7 @@ class Database implements Databaseator{
 		if (db.containsKey(lang)) {
 			langDb = db.get(lang);
 		}else {
-			langDb = new ConcurrentSkipListMap<Integer, LanguageEntry>();
+			langDb = new ConcurrentHashMap<Integer, LanguageEntry>();
 			db.put(lang, langDb);
 		}
 		return langDb;
@@ -78,26 +77,4 @@ class Database implements Databaseator{
 		}
 		return distance;
 	}
-
-//	@Override
-//	public String toString() {
-//		
-//		StringBuilder sb = new StringBuilder();
-//		
-//		int langCount = 0;
-//		int kmerCount = 0;
-//		Set<Language> keys = db.keySet();
-//		for (Language lang : keys) {
-//			langCount++;
-//			sb.append(lang.name() + "->\n");
-//			 
-//			 Collection<LanguageEntry> m = new ConcurrentSkipListSet<>(db.get(lang).values());
-//			 kmerCount += m.size();
-//			 for (LanguageEntry le : m) {
-//				 sb.append("\t" + le + "\n");
-//			 }
-//		}
-//		sb.append(kmerCount + " total k-mers in " + langCount + " languages"); 
-//		return sb.toString();
-//	}
 }

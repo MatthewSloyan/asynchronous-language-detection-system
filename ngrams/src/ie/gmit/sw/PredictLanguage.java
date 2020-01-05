@@ -8,32 +8,21 @@ import java.util.Map;
 
 public class PredictLanguage {
 	private Map<Integer, LanguageEntry> queryMap = null;
+	private String query;
+	private int k;
 	
-	public String analyseQuery(String text) {
+	public PredictLanguage(String query, int k) {
+		super();
+		this.query = query;
+		this.k = k;
+	}
+
+	public String analyseQuery() {
 		try {
 			queryMap = new HashMap<Integer, LanguageEntry>();
-			int k = 4;
-			
-			System.out.println(text);
-			
-//			for (int i = 0; i < text.length() - k; i++) {
-//				CharSequence kmer = text.substring(i, i + k);
-//				add(kmer);
-//			}
-			
-//			for (int i = 0; i <= k; i++) {
-//				for (int j = 0; j < text.length() - i; j++) {
-//					CharSequence kmer = text.substring(j, j + i);
-//					System.out.println(kmer);
-//					add(kmer);
-//				}
-//			}
 			
 			for (int i = 1; i <= k; i++) {
-				for (int j = 0; j < text.length() - i; j+=i) {
-					CharSequence kmer = text.substring(j, j + i);
-					add(kmer.hashCode());
-				}
+				getKmers(i);
 			}
 			
 			getTop(400);
@@ -41,17 +30,21 @@ public class PredictLanguage {
 			e.printStackTrace();
 		}
 		
-		System.out.println("Test: " + new DatabaseProxy().getLanguage(queryMap).toString());
-		
 		return new DatabaseProxy().getLanguage(queryMap).toString();
 	}
 	
-	public void add(int kmer) {
+	private void getKmers(int i) {
+		for (int j = 0; j < query.length() - i; j+=i) {
+			CharSequence kmer = query.substring(j, j + i);
+			add(kmer.hashCode());
+		}
+	}
+	
+	private void add(int kmer) {
 		queryMap.put(kmer, new LanguageEntry(kmer, new Utilities().addToFrequency(queryMap, kmer)));
 	}
 	
-	public void getTop(int max) {
-		
+	private void getTop(int max) {
 		List<LanguageEntry> les = new ArrayList<>(queryMap.values());
 		Collections.sort(les);
 		

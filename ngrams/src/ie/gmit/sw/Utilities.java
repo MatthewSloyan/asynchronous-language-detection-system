@@ -1,5 +1,6 @@
 package ie.gmit.sw;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentSkipListMap;
@@ -16,7 +17,7 @@ public class Utilities {
 	}
 	
 	protected Map<Integer, LanguageEntry> scaleByRank(List<LanguageEntry> les, int max) {
-		Map<Integer, LanguageEntry> temp = new ConcurrentSkipListMap<>();
+		Map<Integer, LanguageEntry> temp = new HashMap<>();
 		int rank = 1;
 		for (LanguageEntry le : les) {
 			le.setRank(rank);

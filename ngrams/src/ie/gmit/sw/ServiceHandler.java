@@ -4,16 +4,11 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Map;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ConcurrentHashMap;
-
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 
 /*
  * To compile this servlet, open a command prompt in the web application directory and execute the following commands:
@@ -82,7 +77,7 @@ public class ServiceHandler extends HttpServlet {
 	}
 
 	private void display(PrintWriter out, String option, String s, String taskNumber) {
-		out.print("<H1>Processing request for Job#: " + taskNumber + "</H1>");
+		out.print("<H1>Processing request for Job#: " + taskNumber + " - Estimated wait time of 2 seconds.</H1>");
 		out.print("<div id=\"r\"></div>");
 
 		out.print("<font color=\"#993333\"><b>");
@@ -102,7 +97,7 @@ public class ServiceHandler extends HttpServlet {
 		out.print("</html>");
 
 		out.print("<script>");
-		out.print("var wait=setTimeout(\"document.frmRequestDetails.submit();\", 3000);");
+		out.print("var wait=setTimeout(\"document.frmRequestDetails.submit();\", 2000);");
 		out.print("</script>");
 	}
 

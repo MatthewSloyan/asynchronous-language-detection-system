@@ -25,7 +25,7 @@ public class JobProcessor implements Runnable {
             	LanguageRequest request = JobProducer.getInQueue().take();
             	
             	long startTime = System.nanoTime(); 
-            	String result = new PredictLanguage().analyseQuery(request.getQuery());
+            	String result = new PredictLanguage(request.getQuery(), 4).analyseQuery();
             	System.out.println("\nRunning time (ms): " + (System.nanoTime() - startTime));
             	
             	outQueueMap.put(request.getTaskNum(), result);

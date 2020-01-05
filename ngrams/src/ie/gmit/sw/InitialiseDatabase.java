@@ -1,8 +1,29 @@
 package ie.gmit.sw;
 
+import java.io.File;
+import java.util.Scanner;
+
 public class InitialiseDatabase {
+	private Scanner console = new Scanner(System.in);
+	private boolean isValid;
+	private String filePath;
 
 	public void initialise(String languageDataSet) {
+//		do {
+//			System.out.println("Please enter path to Wili File.");
+//			filePath = console.nextLine();
+//
+//			File f = new File(filePath);
+//			isValid = true;
+//		
+//			//check if file exists, keeps asking till it is valid
+//			if (f.exists()) {
+//				isValid = false;
+//			} else {
+//				System.out.println("File does not exist, please try again.");
+//			}
+//		} while (isValid);
+		
 		// start the running time of program to be printed out for user
 		long startTime = System.nanoTime(); 
 		
