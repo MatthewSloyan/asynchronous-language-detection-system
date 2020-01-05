@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class PredictLanguage {
+public class PredictLanguage implements Processable {
 	private Map<Integer, LanguageEntry> queryMap = null;
 	private String query;
 	private int k;
@@ -21,9 +21,7 @@ public class PredictLanguage {
 		try {
 			queryMap = new HashMap<Integer, LanguageEntry>();
 			
-			for (int i = 1; i <= k; i++) {
-				getKmers(i);
-			}
+			getKmers();
 			
 			getTop(400);
 		} catch (Exception e) {
@@ -33,7 +31,13 @@ public class PredictLanguage {
 		return new DatabaseProxy().getLanguage(queryMap).toString();
 	}
 	
-	private void getKmers(int i) {
+	public void getKmers() {
+		for (int i = 1; i <= k; i++) {
+			getKmer(i);
+		}
+	}
+
+	public void getKmer(int i) {
 		for (int j = 0; j < query.length() - i; j+=i) {
 			CharSequence kmer = query.substring(j, j + i);
 			add(kmer.hashCode());
