@@ -73,14 +73,14 @@ Class that processes the query text from the client and returns a result. Also i
 Utilities methods which are abstracted and implemented from both the PredictLanguage and FileParser class, to cut down on repeated code (DRY).
 
 ## Speed tests (I7 Processor):
-Parse WiLi text file with 1-4 kmers with tiling and add to db on startup = 2.1s
-Language query from client = 0.1s
+* Parse WiLi text file with 1-4 kmers with tiling and add to db on startup = 2.1s
+* Language query from client = 0.1s
 
 ## Sample Tests 
 From testing it was found results can vary, but if given enough text it is quite accurate. Below are some sample tests.
-Spanish - Hola! Yo empecé aprendo Español hace dos mes en la escuela. Yo voy la universidad. Yo tratar estudioso Español tres hora todos los días para que yo saco mejor rápido. ¿Cosa algún yo debo hacer además construir mí vocabulario? Muchas veces yo estudioso la palabras solo para que yo construir mí voabulario rápido.
-Irish - Dia Duit! Conas atá tú? Is breá liom bheith ag obair le madraí agus cait. Go raibh maith agat as labhairt liom. Is maith liom freisin féachaint ar scannáin agus ar chluichí le cairde chomh maith le bheith ag éisteacht le ceol ag an deireadh seachtaine.
-French - Le lundi matin, mon père travaille au bureau, ma mère reste à la maison, ma petite sœur va à l'école, et je vais à l'université. Le mardi, le mercredi, le jeudi, et finalement le vendredi, nous faisons la même chose. Mais le week-end, il est assez différent. Pendant le week-end, nous ne sommes pas très occupés comme les autres jours. Le samedi matin, mon père qui est très sportif fait de la natation, et ma mère fait la cuisine parce que chaque samedi, mes parents invitent ma tante à dîner avec nous. Enfin, le dimanche d'habitude nous ne faisons pas grand-chose; quelques fois, mon père fait du bricolage si nécessaire.
+* Spanish - Hola! Yo empecé aprendo Español hace dos mes en la escuela. Yo voy la universidad. Yo tratar estudioso Español tres hora todos los días para que yo saco mejor rápido. ¿Cosa algún yo debo hacer además construir mí vocabulario? Muchas veces yo estudioso la palabras solo para que yo construir mí voabulario rápido.
+* Irish - Dia Duit! Conas atá tú? Is breá liom bheith ag obair le madraí agus cait. Go raibh maith agat as labhairt liom. Is maith liom freisin féachaint ar scannáin agus ar chluichí le cairde chomh maith le bheith ag éisteacht le ceol ag an deireadh seachtaine.
+* French - Le lundi matin, mon père travaille au bureau, ma mère reste à la maison, ma petite sœur va à l'école, et je vais à l'université. Le mardi, le mercredi, le jeudi, et finalement le vendredi, nous faisons la même chose. Mais le week-end, il est assez différent. Pendant le week-end, nous ne sommes pas très occupés comme les autres jours. Le samedi matin, mon père qui est très sportif fait de la natation, et ma mère fait la cuisine parce que chaque samedi, mes parents invitent ma tante à dîner avec nous. Enfin, le dimanche d'habitude nous ne faisons pas grand-chose; quelques fois, mon père fait du bricolage si nécessaire.
 
 ## Additions/Extras:
 * The option to enter the full path to the WiLi text file to allow compatibility with all platforms easily (Windows, Mac & Linux), also so it can be placed securely.
