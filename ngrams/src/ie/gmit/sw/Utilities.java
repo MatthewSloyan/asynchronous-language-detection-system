@@ -7,7 +7,7 @@ import java.util.Map;
 /**
 * Utilities methods which are abstracted and implemented from both the PredictLanguage and FileParser class.
 * 
-* @see FileParser
+* @see FileProcessor
 * @see PredictLanguage
 * @author Matthew Sloyan
 */
@@ -69,6 +69,7 @@ public class Utilities {
 	* 
 	* @param s CharSequence of passed in kmer.
 	* @return sequence encoded kmer
+	* @throws Exception if error occurs
 	* 
 	* @author John Healy
 	*/

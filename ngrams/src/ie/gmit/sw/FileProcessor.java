@@ -32,7 +32,7 @@ public class FileProcessor implements Runnable, Processable {
 	* I did at one stage have this working with a queue where each Kmer was being added to a queue here, 
 	* but as previously mentioned it added complexity and slowed down the processing considerably. 
 	* 
-	* Running time: O(N^2) as getKmers() contains a loop & getKmer() contains an inner loop.
+	* Running time: O(N^2) as getKmers() contains a loop and getKmer() contains an inner loop.
 	* T(n) = 2^n + 2
 	* 
 	* @see DatabaseProxy

@@ -71,8 +71,8 @@ public class ServiceHandler extends HttpServlet {
 	*
 	* @see JobProducer
 	* @see JobProcessor
-	* @throws ServletException if servlet error occurs
-	* @throws IOException if output error occurs 
+	* @throws ServletException
+	* @throws IOException
 	*/
 	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		resp.setContentType("text/html"); //Output the MIME type
@@ -161,8 +161,8 @@ public class ServiceHandler extends HttpServlet {
 	* @param req HttpServletRequest from client.
 	* @param resp HttpServletResponse sent back to user (PrintWriter from doGet).
 	*
-	* @throws ServletException if servlet error occurs
-	* @throws IOException if output error occurs 
+	* @throws ServletException
+	* @throws IOException
 	*/
 	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		doGet(req, resp);

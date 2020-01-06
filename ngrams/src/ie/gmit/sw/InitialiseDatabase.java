@@ -13,20 +13,22 @@ public class InitialiseDatabase {
 	* Once completed it resizes the database to only the top 300 most frequently occurring Kmers through the Proxy.
 	* Also calls Path methods to get the file path from the user or the url to the WiLi file.
 	* 
-	* @param languageDataSet the path to the Wili text file.
-	* @see Path
+	* @param path The path to the Wili text file.
+	* @see UserInput
 	* @see Parser
 	* @see DatabaseProxy
 	*/
 	public void initialise(String path) {
 		// Get the full file path from the user or url to raw text file.
-		Path p = new Path();
-		p.getUserEntry();
+		UserInput p = new UserInput();
+		p.getUserInput();
 		
 		// start the running time of program to be printed out for user
 		long startTime = System.nanoTime(); 
 		
 		// Start a new thread to Parse the file line by line.
+		// p.getPath() is the file path or url.
+		// 4 is the max number of kmers to use.
 		Thread t = new Thread(new Parser(p.getPath(), 4, p.getOption()));
 		t.start();
 		

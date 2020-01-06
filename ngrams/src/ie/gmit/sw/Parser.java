@@ -17,15 +17,16 @@ import java.util.concurrent.TimeUnit;
 public class Parser implements Runnable{
 	private String file;
 	private int k;
-	private int option;
+	private String option;
 	
 	/**
 	* Constructor for class
 	* 
 	* @param file the location of the wili file
 	* @param k the max number of Kmers
+	* @param option the option whether it's a file or url to be read in.
 	*/
-	public Parser(String file, int k, int option) {
+	public Parser(String file, int k, String option) {
 		super();
 		this.file = file;
 		this.k = k;
@@ -53,7 +54,8 @@ public class Parser implements Runnable{
 		try {
 			BufferedReader br;
 			
-			if (option == 1) {
+			// Check if reading file or from URL
+			if (Integer.parseInt(option) == 1) {
 				br = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
 			}
 			else {

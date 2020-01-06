@@ -23,10 +23,14 @@ class Database implements Databaseable{
 	private static Map<Language, Map<Integer, LanguageEntry>> db = new ConcurrentHashMap<>();
 
 	private Database() {}
-    
-	// As Database is accessed in a threaded manner, it can affect the Singleton nature as multiple threads might access it together.
-	// Code adapted from to implemented a double checking lock which reduces overhead. 
-	// https://www.geeksforgeeks.org/java-singleton-design-pattern-practices-examples/
+	
+	/**
+	* As Database is accessed in a threaded manner, it can affect the Singleton nature as multiple threads might access it together.
+	* Code adapted from to implemented a double checking lock which reduces overhead. 
+	* https://www.geeksforgeeks.org/java-singleton-design-pattern-practices-examples/
+	* 
+	* @return Database
+	*/
     public static Database getInstance() {
     	if (instance == null)  
         { 
