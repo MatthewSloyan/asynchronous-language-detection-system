@@ -57,7 +57,8 @@ public class FileProcessor implements Runnable, Processable {
 
 	/**
 	* The loop adds each specific kmer with it's length determined above to the database.
-	* So if i is 2, it gets every kmer length 2 in the string one after the other.
+	* So if i is 2, it gets every kmer length 2 in the string one character at a time (Tiling)
+	* This is slower than getting one after the other but it will produce a larger and more accurate result.
 	* By getting a substring the Kmer is simply retrieved and passed through the proxy to the Database.
 	* CharSequence is also used as it uses less memory than a String.
 	* 
@@ -65,7 +66,7 @@ public class FileProcessor implements Runnable, Processable {
 	* but it was quite slow and the results weren't as accurate.
 	*/
 	public void getKmer(int i) {
-		for (int j = 0; j < record[0].length() - i; j+=i) {
+		for (int j = 0; j < record[0].length() - i; j++) {
 			CharSequence kmer = record[0].substring(j, j + i);
 			new DatabaseProxy().add(record[1], kmer.hashCode());
 		}

@@ -53,9 +53,9 @@ public class JobProcessor implements Runnable {
             	
             	long startTime = System.nanoTime(); 
             	String result = new PredictLanguage(request.getQuery(), 4).analyseQuery();
-            	System.out.println("\nRunning time (ms): " + (System.nanoTime() - startTime));
             	
             	outQueueMap.put(request.getTaskNum(), result);
+            	System.out.println("\nProcessed task number: " + request.getTaskNum() + " in " + (System.nanoTime() - startTime) + " nanoseconds");
             	
             } catch (InterruptedException e) {
                 e.printStackTrace();

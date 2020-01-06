@@ -67,7 +67,7 @@ public class PredictLanguage implements Processable {
 	* CharSequence is also used as it uses less memory than a String.
 	*/
 	public void getKmer(int i) {
-		for (int j = 0; j < query.length() - i; j+=i) {
+		for (int j = 0; j < query.length() - i; j++) {
 			CharSequence kmer = query.substring(j, j + i);
 			add(kmer.hashCode());
 		}

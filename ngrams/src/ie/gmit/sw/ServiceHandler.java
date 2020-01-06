@@ -126,7 +126,7 @@ public class ServiceHandler extends HttpServlet {
 	private void display(PrintWriter out, String option, String query, String taskNumber, String result) {
 		
 		if (result == null) {
-			out.print("<H2>Processing request for Job#: " + taskNumber + " - Estimated wait time of 3 seconds.</H2>");
+			out.print("<H2>Processing request for Job#: " + taskNumber + " - Estimated wait time of 2 seconds.</H2>");
 		}
 		else {
 			out.print("<H2>Predicted Language: " + result + "</H2>");
@@ -150,7 +150,7 @@ public class ServiceHandler extends HttpServlet {
 		out.print("</html>");
 
 		out.print("<script>");
-		out.print("var wait=setTimeout(\"document.frmRequestDetails.submit();\", 3000);");
+		out.print("var wait=setTimeout(\"document.frmRequestDetails.submit();\", 2000);");
 		out.print("</script>");
 	}
 
