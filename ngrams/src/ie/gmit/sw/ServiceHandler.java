@@ -1,6 +1,5 @@
 package ie.gmit.sw;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Map;
@@ -39,8 +38,7 @@ import javax.servlet.http.HttpServletResponse;
 public class ServiceHandler extends HttpServlet {
 	private String languageDataSet = null; //This variable is shared by all HTTP requests for the servlet
 	private static int jobNumber = 0; //The number of the task in the async queue
-	private File f;
-
+	
 	/**
 	* Gets the servlet and sets up the database on startup of Tomcat server.
 	* The server will wait till the database is setup to ensure it's correct.
@@ -52,10 +50,8 @@ public class ServiceHandler extends HttpServlet {
 	public void init() throws ServletException {
 		ServletContext ctx = getServletContext(); //Get a handle on the application context
 		languageDataSet = ctx.getInitParameter("LANGUAGE_DATA_SET"); //Reads the value from the <context-param> in web.xml
-
-		//You can start to build the subject database at this point. The init() method is only ever called once during the life cycle of a servlet
-		f = new File(languageDataSet);
 		
+		//Start to build the subject database at this point. The init() method is only ever called once during the life cycle of a servlet
 		new InitialiseDatabase().initialise(languageDataSet);
 	}
 

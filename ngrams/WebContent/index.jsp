@@ -15,9 +15,9 @@
 					<b>Select Option:</b>
 						
 					<select name="cmbOptions">
-						<option>Option 1</option>
-						<option selected>Option 2</option>
-						<option>Option 3</option>
+						<option selected>Language Detection</option>
+						<option>Future Addition (Language Conversion)</option>
+						<option>Future Addition</option>
 					</select>	
 					<p/>
 

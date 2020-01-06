@@ -5,7 +5,7 @@ package ie.gmit.sw;
 * However it could be used to parse any number of different types of files E.g HTML pages.
 * Also implements Processable which could be used again in different types of parsers.
 * 
-* @see Databaseable
+* @see Processable
 * @author Matthew Sloyan
 */
 public class FileProcessor implements Runnable, Processable {

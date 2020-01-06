@@ -3,6 +3,8 @@ package ie.gmit.sw;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -15,6 +17,7 @@ import java.util.concurrent.TimeUnit;
 public class Parser implements Runnable{
 	private String file;
 	private int k;
+	private int option;
 	
 	/**
 	* Constructor for class
@@ -22,10 +25,11 @@ public class Parser implements Runnable{
 	* @param file the location of the wili file
 	* @param k the max number of Kmers
 	*/
-	public Parser(String file, int k) {
+	public Parser(String file, int k, int option) {
 		super();
 		this.file = file;
 		this.k = k;
+		this.option = option;
 	}
 	
 	/**
@@ -47,9 +51,17 @@ public class Parser implements Runnable{
 	*/
 	public void run() {
 		try {
-			BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
-			// Code adapted to get resource in web application: https://stackoverflow.com/questions/10978380/how-to-read-a-text-file-from-a-web-application
-			//BufferedReader br = new BufferedReader(new InputStreamReader(this.getClass().getClassLoader().getResourceAsStream(file)));
+			BufferedReader br;
+			
+			if (option == 1) {
+				br = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
+			}
+			else {
+				URL websiteURL = new URL(file);
+		        URLConnection connectionEstablished = websiteURL.openConnection();
+		        br = new BufferedReader(new InputStreamReader(connectionEstablished.getInputStream()));
+			}
+			
 			String line = null;
 			String[] record = null;
 			

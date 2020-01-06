@@ -6,6 +6,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+* Class that processes the query text from the client and returns a result.
+* Also implements Processable which could be used again in different types of parsers.
+* 
+* @see Processable
+* @author Matthew Sloyan
+*/
 public class PredictLanguage implements Processable {
 	private Map<Integer, LanguageEntry> queryMap = null;
 	private String query;
@@ -72,7 +79,7 @@ public class PredictLanguage implements Processable {
 	* Running time: O(1) as HashMap's search, insert and delete functions are O(1)
 	* 
 	* I wanted to implement the two methods using the Databaseable interface but it was adding unnecessary complexity 
-	* as the parameters required are different.
+	* as the parameters required are different. Also it would break the Dependency Inversion Principle.
 	* 
 	* @param kmer hashcode of kmer
 	*
